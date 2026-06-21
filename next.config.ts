@@ -1,10 +1,9 @@
-import type { NextConfig } from "next";
-
 /** @type {import('next').NextConfig} */
-const nextConfig: NextConfig = {
+
+const nextConfig = {
   outputFileTracingRoot: __dirname, // ✅ ensures correct workspace root
   images: {
-    domains: ["files.stripe.com"],   // your existing config
+    domains: ["files.stripe.com", "cdn.shopify.com"],   // Added Shopify CDN
   },
 };
 

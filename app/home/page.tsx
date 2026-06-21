@@ -1,46 +1,117 @@
+// app/page.tsx
 import Image from "next/image";
-import Navbar from "../../components/Navbar";
-import { stripe } from "@/lib/stripe"
-// import NarutoCard from "@/public/NarutoCard.jpg"
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Carousel } from "@/components/carousel";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { ShopifyProductCard } from "@/components/ui/shopify-product-card";
+import { shopifyFetch } from "@/lib/shopify/client";
+import { GET_PRODUCTS } from "@/lib/shopify/queries";
 
-export default async function Home() {
-    const products = await stripe.products.list({
-        expand: ["data.default_price"],
-        limit: 5,
-    })
-    
-    return (
-        <>
-            <Navbar />
-            <main>
-                <div>
-                    <section className="rounded bg-gray-100 mx-auto max-w-5xl py-8 sm:py-12 flex items-center min-h-[400px]">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 sm:px-16 my-auto items-center justify-items-center">
-                            <div id="section1" className="max-w-md space-y-4">
-                                <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Welcome to the Studio</h1>
-                                <p className="text-neutral-600">We Collect So You Can Connect!</p>
-                                <Button asChild variant="default" className="w-36 inline-flex items-center justify-center rounded-full px-6 py-3 !text-white">
-                                    <Link href="/services" className="inline-flex items-center justify-center rounded-full px-6 py-3">Browse Services</Link>
-                                </Button>
-                            </div>
-                            <Image 
-                                alt="Banner Image"
-                                width={450}
-                                height={450}
-                                src={products.data[0].images[0]}
-                                className="rounded"
-                            />
-                        </div>
-                    </section>
-                    <section className="py-8 mx-auto max-w-5xl">
-                        <Carousel products={products.data} />
-                    </section>
-                </div>
+async function getShopifyProducts() {
+  const { data } = await shopifyFetch<{
+    products: {
+      edges: Array<{
+        node: {
+          id: string;
+          title: string;
+          description: string;
+          handle: string;
+          priceRange: {
+            minVariantPrice: {
+              amount: string;
+              currencyCode: string;
+            };
+          };
+          images: {
+            edges: Array<{
+              node: {
+                url: string;
+                altText: string | null;
+              };
+            }>;
+          };
+          variants: {
+            edges: Array<{
+              node: {
+                id: string;
+                title: string;
+                price: {
+                  amount: string;
+                  currencyCode: string;
+                };
+                availableForSale: boolean;
+              };
+            }>;
+          };
+        };
+      }>;
+    };
+  }>({
+    query: GET_PRODUCTS,
+    variables: { first: 3 },
+  });
 
-            </main>
-        </>
-    )
+  return data.products.edges.map(edge => edge.node);
+}
+
+export default async function HomePage() {
+  const products = await getShopifyProducts();
+
+  return (
+    <>
+      <Navbar />
+      
+      <main className="bg-white min-h-screen">
+        {/* Hero Section - Image stays the same size */}
+        <section>
+            <div className="relative h-screen max-h-[800px] w-full">
+                <Image
+                    src="/FYM3.jpeg" // Your main brand image
+                    alt="Brand hero image"
+                    width={1920}  // Set your image's actual width
+                    height={1080} // Set your image's actual height
+                    className="w-full h-auto"
+                    priority
+                />
+            </div>
+        </section>
+        
+        {/* Products Section */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            {/* Centered text content */}
+            <div className="max-w-2xl mx-auto text-center mb-12">
+              <Image 
+                src="/fawkyumean.jpeg"
+                alt="Enter Website"
+                width={900}
+                height={700}
+                className="cursor-pointer hover:scale-105 transition-transform duration-300"
+                priority
+              />
+            </div>
+            
+            {/* 3-Item Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {products.map((product) => (
+                <ShopifyProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            
+            {/* View All Button */}
+            <div className="text-center mt-12">
+              <Link 
+                href="/shopify-products" 
+                className="inline-block border border-gray-300 px-8 py-3 text-sm tracking-wider uppercase hover:bg-gray-50 transition-colors"
+              >
+                View All
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
+    </>
+  );
 }
