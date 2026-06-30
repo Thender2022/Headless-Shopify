@@ -1,43 +1,36 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import fawkyumean from "@/public/fawkyumean.jpeg";
 
 export default function LandingPage() {
   return (
-    <section className="w-screen h-screen bg-white relative overflow-hidden">
-      {/* Grid Layout */}
-      <div className="grid grid-rows-[1fr_auto_1fr] h-full">
-        
-        {/* Empty top spacer */}
-        <div></div>
-        
-        {/* Image - centered in middle row */}
-        <div className="flex justify-center">
-          <Link href="/home">
-            <div className="relative">
-              <Image 
-                src={fawkyumean}
-                alt="Enter Website"
-                width={900}
-                height={700}
-                className="cursor-pointer hover:scale-105 transition-transform duration-300"
-                priority
-              />
-            </div>
-          </Link>
-        </div>
-        
-        {/* Button section with space above */}
-        {/* <div className="flex flex-col items-center pt-8">
-          <button
-            onClick={() => window.location.href = "/home"}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold shadow-md"
+    <section className="w-screen h-screen relative overflow-hidden">
+      {/* Video Background - Full screen */}
+      <div className="absolute inset-0 w-full h-full">
+        <Link href="/home" className="block w-full h-full">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
           >
-            Enter Website
-          </button>
-        </div> */}
+            <source src="/2spinny.mp4" type="video/mp4" />
+            {/* Fallback image if video doesn't load */}
+            <img src="/FYM3.jpeg" alt="Fawkyumean" className="w-full h-full object-cover" />
+          </video>
+        </Link>
+      </div>
+
+      {/* Button - Positioned lower on the screen */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <Link
+          href="/home"
+          className="pointer-events-auto px-8 md:px-10 py-3 md:py-4 bg-transparent text-black border-2 border-black text-xs md:text-sm tracking-wider uppercase transition-colors hover:bg-red-600 hover:text-black hover:border-red-600"
+          style={{ marginTop: '35%' }}
+        >
+          Enter
+        </Link>
       </div>
     </section>
   );

@@ -23,12 +23,13 @@ export default function Navbar() {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6">
-            {/* <Link href="/home" className="text-sm hover:text-gray-600 transition">
+            <Link href="/home" className="text-sm hover:text-gray-600 transition">
               Home
             </Link>
             <Link href="/shopify-products" className="text-sm hover:text-gray-600 transition">
               Products
-            </Link> */}
+            </Link>
+            <Link href="/FAQ">FAQs</Link>
             {/* <Link href="/about" className="text-sm hover:text-gray-600 transition">
               About
             </Link> */}
