@@ -11,100 +11,46 @@ interface Variant {
     currencyCode: string;
   };
   availableForSale: boolean;
-  quantityAvailable: number;
-  selectedOptions: Array<{
-    name: string;
-    value: string;
-  }>;
-}
-
-interface Option {
-  id: string;
-  name: string;
-  values: string[];
 }
 
 interface VariantSelectorProps {
-  productId: string;
   variants: Variant[];
-  options: Option[];
+  // Remove productId since it's not being used
 }
 
-export function VariantSelector({ productId, variants, options }: VariantSelectorProps) {
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
-    // Initialize with first variant's options
-    const firstVariant = variants[0];
-    const initial: Record<string, string> = {};
-    firstVariant?.selectedOptions.forEach((opt) => {
-      initial[opt.name] = opt.value;
-    });
-    return initial;
-  });
-
-  // Find the currently selected variant based on selected options
-  const selectedVariant = variants.find((variant) =>
-    variant.selectedOptions.every(
-      (opt) => selectedOptions[opt.name] === opt.value
-    )
+export function VariantSelector({ variants }: VariantSelectorProps) {
+  const [selectedVariantId, setSelectedVariantId] = useState(
+    variants.find(v => v.availableForSale)?.id || variants[0]?.id || ""
   );
 
-  const handleOptionChange = (optionName: string, value: string) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [optionName]: value,
-    }));
-  };
-
-  // Check if a specific option value is available
-  const isOptionAvailable = (optionName: string, value: string) => {
-    return variants.some((variant) =>
-      variant.selectedOptions.some(
-        (opt) => opt.name === optionName && opt.value === value
-      )
-    );
-  };
+  const selectedVariant = variants.find(v => v.id === selectedVariantId);
 
   return (
-    <div className="space-y-4">
-      {options.map((option) => (
-        <div key={option.id}>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {option.name}
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {option.values.map((value) => {
-              const isAvailable = isOptionAvailable(option.name, value);
-              const isSelected = selectedOptions[option.name] === value;
-              
-              return (
-                <button
-                  key={value}
-                  onClick={() => isAvailable && handleOptionChange(option.name, value)}
-                  disabled={!isAvailable}
-                  className={`
-                    px-4 py-2 border rounded-md text-sm font-medium transition
-                    ${isSelected 
-                      ? 'border-black bg-black text-white' 
-                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
-                    }
-                    ${!isAvailable && 'opacity-50 cursor-not-allowed bg-gray-100'}
-                  `}
-                >
-                  {value}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
+    <div className="space-y-3">
+      <label className="text-sm font-medium text-gray-700 block">
+        Select Option:
+      </label>
+      <select
+        value={selectedVariantId}
+        onChange={(e) => setSelectedVariantId(e.target.value)}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent bg-white"
+      >
+        {variants.map((variant) => (
+          <option 
+            key={variant.id} 
+            value={variant.id}
+            disabled={!variant.availableForSale}
+          >
+            {variant.title} - {variant.price.amount} {variant.price.currencyCode}
+            {!variant.availableForSale && " (Out of Stock)"}
+          </option>
+        ))}
+      </select>
+      
       {selectedVariant && (
-        <div className="text-sm text-gray-600">
-          <p>SKU: {selectedVariant.title}</p>
-          {selectedVariant.quantityAvailable > 0 && (
-            <p>In stock: {selectedVariant.quantityAvailable}</p>
-          )}
-        </div>
+        <p className="text-sm text-gray-500">
+          {selectedVariant.availableForSale ? "In Stock" : "Out of Stock"}
+        </p>
       )}
     </div>
   );

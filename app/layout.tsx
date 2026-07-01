@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
-import Link from "next/link";
+// import Link from "next/link";
 // import { CartButton } from "@/components/ui/cart-button";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 // import nav from "./components/Navbar";
 
 const geistSans = Geist({

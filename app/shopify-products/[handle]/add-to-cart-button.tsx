@@ -8,10 +8,9 @@ import { useCart } from "@/context/CartContext";
 interface AddToCartButtonProps {
   variantId: string;
   available: boolean;
-  title: string;
 }
 
-export function AddToCartButton({ variantId, available, title }: AddToCartButtonProps) {
+export function AddToCartButton({ variantId, available }: AddToCartButtonProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
 

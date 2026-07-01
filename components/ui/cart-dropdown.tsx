@@ -42,10 +42,8 @@ interface CartItem {
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Add back totalAmount
-
-  const { cartItems, totalQuantity, checkoutUrl, updateQuantity, removeFromCart, isLoading } = useCart();
+  
+  const { cartItems, totalQuantity, totalAmount, checkoutUrl, updateQuantity, removeFromCart, isLoading } = useCart();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -121,6 +119,12 @@ export function CartDropdown() {
   const formatPrice = (price: number): string => {
     return price.toFixed(2);
   };
+
+  // Use the totalAmount from the cart context or fall back to calculated subtotal
+  // Convert to number if it's a string
+  const displayTotal = typeof totalAmount === 'string' 
+    ? parseFloat(totalAmount) 
+    : (totalAmount || subtotal);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -239,12 +243,12 @@ export function CartDropdown() {
             )}
           </div>
 
-          {/* Footer - Using calculated subtotal */}
+          {/* Footer - Using displayTotal */}
           {cartItems.length > 0 && (
             <div className="p-4 border-t bg-white sticky bottom-0 space-y-3">
               <div className="flex justify-between font-semibold">
                 <span>Subtotal:</span>
-                <span>${formatPrice(subtotal)}</span>
+                <span>${formatPrice(displayTotal)}</span>
               </div>
               <p className="text-xs text-gray-500 text-center">
                 Shipping and taxes calculated at checkout

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -17,7 +18,7 @@ export default function LandingPage() {
           >
             <source src="/2spinny.mp4" type="video/mp4" />
             {/* Fallback image if video doesn't load */}
-            <img src="/FYM3.jpeg" alt="Fawkyumean" className="w-full h-full object-cover" />
+            <Image src="/FYM3.jpeg" alt="Fawkyumean" className="w-full h-full object-cover" />
           </video>
         </Link>
       </div>

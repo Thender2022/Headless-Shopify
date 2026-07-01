@@ -1,14 +1,29 @@
 // app/shopify-products/[handle]/page.tsx
-import { notFound } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify/client";
 import { GET_PRODUCT_BY_HANDLE } from "@/lib/shopify/queries";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Image from "next/image";
 import { AddToCartButton } from "./add-to-cart-button";
 import { VariantSelector } from "./variant-selector";
-import { ImageGallery } from "./image-galery";
-import Navbar from "@/components/Navbar";
 
-// Types for the product data
-interface ShopifyProduct {
+// Define proper types
+interface ProductVariant {
+  id: string;
+  title: string;
+  price: {
+    amount: string;
+    currencyCode: string;
+  };
+  availableForSale: boolean;
+}
+
+interface ProductImage {
+  url: string;
+  altText: string | null;
+}
+
+interface Product {
   id: string;
   title: string;
   description: string;
@@ -18,173 +33,148 @@ interface ShopifyProduct {
       amount: string;
       currencyCode: string;
     };
-    maxVariantPrice: {
-      amount: string;
-      currencyCode: string;
-    };
   };
   images: {
     edges: Array<{
-      node: {
-        url: string;
-        altText: string | null;
-        width: number;
-        height: number;
-      };
+      node: ProductImage;
     }>;
   };
   variants: {
     edges: Array<{
-      node: {
-        id: string;
-        title: string;
-        price: {
-          amount: string;
-          currencyCode: string;
-        };
-        availableForSale: boolean;
-        quantityAvailable: number;
-        selectedOptions: Array<{
-          name: string;
-          value: string;
-        }>;
-      };
+      node: ProductVariant;
     }>;
   };
-  options: Array<{
-    id: string;
-    name: string;
-    values: string[];
-  }>;
-  tags: string[];
-  vendor: string;
-  productType: string;
 }
 
-async function getProduct(handle: string): Promise<ShopifyProduct | null> {
-  const { data } = await shopifyFetch<{
-    productByHandle: ShopifyProduct | null;
-  }>({
-    query: GET_PRODUCT_BY_HANDLE,
-    variables: { handle },
-  });
-
-  return data.productByHandle;
-}
-
-// Generate static params for all products (optional - for static export)
-export async function generateStaticParams() {
-  const { data } = await shopifyFetch<{
-    products: { edges: Array<{ node: { handle: string } }> };
-  }>({
-    query: `
-      query GetProductHandles {
-        products(first: 100) {
-          edges {
-            node {
-              handle
-            }
-          }
-        }
-      }
-    `,
-  });
-
-  return data.products.edges.map(({ node }) => ({
-    handle: node.handle,
-  }));
-}
-
-interface PageProps {
-  params: Promise<{
-    handle: string;
-  }>;
-}
-
-export default async function ProductDetailPage({ params }: PageProps) {
-  const { handle } = await params;
-  
-  const product = await getProduct(handle);
-
-  if (!product) {
-    notFound();
+async function getShopifyProduct(handle: string): Promise<Product | null> {
+  // Check if Shopify credentials exist
+  if (!process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || 
+      !process.env.SHOPIFY_STORE_DOMAIN) {
+    return null;
   }
 
-  const allImages = product.images.edges.map(edge => edge.node);
-  const variants = product.variants.edges.map(edge => edge.node);
-  
-  // Check if product has multiple variants
-  const hasVariants = variants.length > 1;
-  const singlePrice = product.priceRange.minVariantPrice.amount === product.priceRange.maxVariantPrice.amount;
-  const priceRange = singlePrice 
-    ? `$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}`
-    : `$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)} - $${parseFloat(product.priceRange.maxVariantPrice.amount).toFixed(2)}`;
+  try {
+    const { data } = await shopifyFetch<{
+      productByHandle: Product;
+    }>({
+      query: GET_PRODUCT_BY_HANDLE,
+      variables: { handle },
+    });
 
-  // Get default variant (first available, or first overall)
-  const defaultVariant = variants.find(v => v.availableForSale) || variants[0];
+    return data.productByHandle;
+  } catch (error) {
+    console.error("Failed to fetch Shopify product:", error);
+    return null;
+  }
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: { handle: string };
+}) {
+  const { handle } = params;
+  
+  // Check if Shopify credentials exist
+  const shopifyConfigured = !!(
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN && 
+    process.env.SHOPIFY_STORE_DOMAIN
+  );
+
+  // If not configured, show fallback
+  if (!shopifyConfigured) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-16 px-4 min-h-screen">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+              <h2 className="text-lg font-semibold text-yellow-800 mb-2">
+                ⚠️ Shopify Integration Not Configured
+              </h2>
+              <p className="text-yellow-700">
+                Add your Shopify credentials to <code className="bg-yellow-100 px-2 py-0.5 rounded">.env</code> to view products.
+              </p>
+              <p className="text-sm text-yellow-600 mt-2">
+                Required: <code className="bg-yellow-100 px-2 py-0.5 rounded">SHOPIFY_STOREFRONT_ACCESS_TOKEN</code> and <code className="bg-yellow-100 px-2 py-0.5 rounded">SHOPIFY_STORE_DOMAIN</code>
+              </p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  const product = await getShopifyProduct(handle);
+
+  if (!product) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-16 px-4 min-h-screen">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-3xl font-bold mb-4">Product Not Found</h1>
+            <p className="text-gray-600">The product you&apos;re looking for doesn&apos;t exist.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  const mainImage: ProductImage | undefined = product.images.edges[0]?.node;
+  const variants: ProductVariant[] = product.variants.edges.map((edge) => edge.node);
+  const price = product.priceRange.minVariantPrice;
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Image Gallery - Now with clickable thumbnails */}
-          <ImageGallery images={allImages} productTitle={product.title} />
+      <div className="container mx-auto py-16 px-4 min-h-screen">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          {/* Product Image */}
+          <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+            {mainImage ? (
+              <Image
+                src={mainImage.url}
+                alt={mainImage.altText || product.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full bg-gray-200">
+                <span className="text-gray-400">No image available</span>
+              </div>
+            )}
+          </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
-            <div>
-              {product.vendor && (
-                <p className="text-sm text-gray-500 mb-1">{product.vendor}</p>
-              )}
-              <h1 className="text-3xl font-bold text-gray-900">{product.title}</h1>
-              {product.productType && (
-                <p className="text-sm text-gray-500 mt-1">{product.productType}</p>
-              )}
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
+            <p className="text-2xl font-semibold text-gray-800 mb-4">
+              {price.amount} {price.currencyCode}
+            </p>
+            <div className="prose prose-sm mb-6">
+              <p className="text-gray-600">{product.description}</p>
             </div>
 
-            <div className="border-t border-b py-4">
-              <p className="text-2xl font-semibold text-gray-900">{priceRange}</p>
-              {!hasVariants && defaultVariant && !defaultVariant.availableForSale && (
-                <p className="text-red-500 text-sm mt-1">Out of stock</p>
-              )}
-            </div>
-
-            {product.description && (
-              <div className="prose prose-sm max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: product.description }} />
-              </div>
+            {/* Variant Selector */}
+            {variants.length > 1 && (
+              <VariantSelector variants={variants} />
             )}
 
-            {product.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {product.tags.map((tag) => (
-                  <span key={tag} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Variant Selector and Add to Cart */}
-            <div className="space-y-4">
-              {hasVariants && (
-                <VariantSelector 
-                  productId={product.id}
-                  variants={variants}
-                  options={product.options}
-                />
-              )}
-              
+            {/* Add to Cart Button */}
+            <div className="mt-6">
               <AddToCartButton 
-                variantId={defaultVariant?.id || variants[0]?.id}
-                available={defaultVariant?.availableForSale ?? false}
-                title={product.title}
+                variantId={variants[0]?.id || ""}
+                available={variants[0]?.availableForSale || false}
               />
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
