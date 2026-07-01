@@ -42,7 +42,10 @@ interface CartItem {
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { cartItems, totalQuantity, totalAmount, checkoutUrl, updateQuantity, removeFromCart, isLoading } = useCart();
+
+  // Add back totalAmount
+
+  const { cartItems, totalQuantity, checkoutUrl, updateQuantity, removeFromCart, isLoading } = useCart();
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -1,4 +1,4 @@
-// components/BrandIntro.tsx
+// components/ui/BrandIntro.tsx
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,13 +12,12 @@ export default function BrandIntro() {
           {/* Left Column - Image */}
           <div className="relative aspect-[4/3] w-full overflow-hidden">
             <Image
-              src="/gang.jpg" // Replace with your image
+              src="/gang.jpg"
               alt="Fawkyumean collective - streets to skate parks"
               fill
               className="object-cover"
               priority
             />
-            {/* Optional: Badge overlay */}
             <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm px-4 py-2">
               <span className="text-white text-xs tracking-widest uppercase">
                 Baltimore → Long Beach
@@ -28,21 +27,18 @@ export default function BrandIntro() {
 
           {/* Right Column - Text Content */}
           <div className="space-y-6">
-            {/* Badge/Label */}
             <div className="inline-block bg-gray-100 px-4 py-1.5">
               <span className="text-xs tracking-[0.2em] uppercase font-medium">
                 The Movement
               </span>
             </div>
 
-            {/* Main Heading */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
               Born in the Streets.
               <br />
               <span className="text-gray-600">Built for the Collective.</span>
             </h2>
 
-            {/* Location Story */}
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <span className="flex items-center gap-1">
                 <span className="inline-block w-2 h-2 bg-black rounded-full"></span>
@@ -55,23 +51,21 @@ export default function BrandIntro() {
               </span>
             </div>
 
-            {/* Brand Story */}
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p className="text-base md:text-lg">
-                Fawkyumean isn't just a brand — it's a collective. Born from the 
-                raw energy of Baltimore's streets and shaped by the creative pulse 
+                Fawkyumean isn&apos;t just a brand — it&apos;s a collective. Born from the 
+                raw energy of Baltimore&apos;s streets and shaped by the creative pulse 
                 of Long Beach, we exist at the intersection of skate culture, music, 
                 and authentic self-expression.
               </p>
               <p className="text-base md:text-lg">
-                We're building a community of individuals who stand in their own 
+                We&apos;re building a community of individuals who stand in their own 
                 identity but understand the power of coming together. This is for 
                 the skaters, the artists, the dreamers, and the ones who make 
                 their own rules.
               </p>
             </div>
 
-            {/* Core Values / Pillars */}
             <div className="grid grid-cols-3 gap-4 pt-4">
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-xs tracking-widest uppercase font-medium">
@@ -83,7 +77,7 @@ export default function BrandIntro() {
                 <p className="text-xs tracking-widest uppercase font-medium">
                   Skate
                 </p>
-                <p className="text-sm text-gray-500 mt-1">Culture & craft</p>
+                <p className="text-sm text-gray-500 mt-1">Culture &amp; craft</p>
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-xs tracking-widest uppercase font-medium">
@@ -93,7 +87,6 @@ export default function BrandIntro() {
               </div>
             </div>
 
-            {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
                 href="/about"

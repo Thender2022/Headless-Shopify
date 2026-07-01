@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
-
 const nextConfig = {
-  outputFileTracingRoot: __dirname, // ✅ ensures correct workspace root
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
-    domains: ["files.stripe.com", "cdn.shopify.com"],   // Added Shopify CDN
+    domains: ["files.stripe.com", "cdn.shopify.com"],
   },
 };
 

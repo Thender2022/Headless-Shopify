@@ -1,5 +1,5 @@
 // app/components/ui/ProductsSection.tsx
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { ShopifyProductCard } from "@/components/ui/shopify-product-card";
 
