@@ -5,6 +5,12 @@ const nextConfig = {
   },
   images: {
     domains: ["files.stripe.com", "cdn.shopify.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
 };
 

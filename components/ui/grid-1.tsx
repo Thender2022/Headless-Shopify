@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const images = [
   { 
-    src: "/hatShot1.jpeg", 
+    src: "/homie.jpg", 
     alt: "Streetwear model 1",
     caption: "SMOKEY",
     description: "East Coast grit"
@@ -17,7 +17,7 @@ const images = [
     description: "West Coast wave"
   },
   { 
-    src: "/homie.jpg", 
+    src: "/hatShot3.jpeg", 
     alt: "Streetwear model 3",
     caption: "REAL ONES",
     description: "Built different"
@@ -30,19 +30,11 @@ const images = [
   },
 ];
 
-export default function ImageGrid() {
+export default function Grid1() {
   return (
-    <div className="w-full px-4 md:px-8 py-16 md:py-20">
-      {/* Section Header - Bigger Title */}
-      <div className="text-center mb-12 md:mb-16">
-        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight mt-2 text-black">
-          Latest <span className="text-[#90210F]">Looks</span>
-        </h2>
-        <div className="w-16 h-1 bg-[#90210F] mx-auto mt-4" />
-      </div>
-
+    <div className="w-full px-4 md:px-8 py-12">
       {/* Full Width Grid - Taller pictures */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full">
         {images.map((image, index) => (
           <div
             key={index}
@@ -52,7 +44,9 @@ export default function ImageGrid() {
               src={image.src}
               alt={image.alt}
               fill
-              className="object-cover grayscale-[15%] group-hover:grayscale-0 scale-100 group-hover:scale-105 transition-all duration-700 ease-out"
+              className={`object-cover grayscale-[15%] group-hover:grayscale-0 scale-100 group-hover:scale-105 transition-all duration-700 ease-out ${
+                index === 0 ? 'object-contain' : 'object-cover'
+              }`}
               sizes="(max-width: 768px) 50vw, 25vw"
               priority={index < 2}
             />

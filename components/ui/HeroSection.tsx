@@ -4,42 +4,64 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full">
-      {/* Image */}
-      <div className="w-full">
-        <Image
-          src="/FYM3.jpeg"
-          alt="Fawkyumean brand hero"
-          width={1920}
-          height={1080}
-          className="w-full h-auto"
-          priority
-          sizes="100vw"
-        />
-      </div>
+    <section className="relative w-full min-h-screen flex items-center justify-center bg-white overflow-hidden">
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 md:px-8 py-12 md:py-16 pb-8 md:pb-12">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge */}
+          <div className="inline-block border border-[#90210F]/30 px-6 py-2">
+            <span className="text-[#90210F] text-xs tracking-[0.3em] uppercase font-bold">
+              Stay Up To Date
+            </span>
+          </div>
+          {/* Spacer between Badge and Heading */}
+          <div className="h-8 md:h-10" />
 
-      {/* Overlay Text & Button - At 53% */}
-      <div className="absolute left-0 right-0 top-[53%] transform -translate-y-1/2">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="max-w-2xl mx-auto text-center">
-            {/* Tagline */}
-            <p className="text-[#F5F5F0] text-lg md:text-xl lg:text-2xl font-bold tracking-wide" 
-               style={{ 
-                 textShadow: 
-                   '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 4px 8px rgba(255, 0, 0, 0.5)'
-               }}>
-              Born in Baltimore, Inspired by Long Beach.
-            </p>
+          {/* Main Heading */}
+          <div className="flex justify-center items-center">
+            <Image 
+              src="/FYM_BLACK.png" 
+              alt="Fawkyumean Global" 
+              width={800} 
+              height={200}
+              className="w-full max-w-[800px] h-auto"
+              priority
+              sizes="(max-width: 768px) 100vw, 800px"
+            />
+          </div>
 
-            {/* Spacer - Maintains space between text and button */}
-            <div className="h-16 md:h-24"></div>
+          {/* Spacer between Heading and Subtitle */}
+          <div className="h-8 md:h-10" />
 
-            {/* Button - Hover: red background with black text */}
+          {/* Subtitle */}
+          <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+            Forged in the streets. Worn by the ones who live it. 
+            From the East Coast hustle to the West Coast wave — 
+            we don't chase trends, we chase ends.
+          </p>
+
+          {/* Spacer between Subtitle and Divider */}
+          <div className="h-8 md:h-10" />
+
+          {/* Divider */}
+          <div className="w-12 h-1 bg-[#90210F] mx-auto" />
+
+          {/* Spacer between Divider and Buttons */}
+          <div className="h-10 md:h-12" />
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
             <Link
-              href="/about"
-              className="inline-block px-8 md:px-10 py-3 md:py-4 bg-transparent text-[#F5F5F0] border border-[#F5F5F0] text-xs md:text-sm tracking-wider uppercase transition-colors hover:bg-red-600 hover:text-black hover:border-red-600"
+              href="/shopify-products"
+              className="px-8 md:px-10 py-3 md:py-4 bg-[#90210F] text-white text-xs md:text-sm tracking-wider uppercase font-bold hover:bg-[#7A1C0D] transition-colors duration-300 text-center"
             >
-              Learn More
+              Shop
+            </Link>
+            <Link
+              href="/welcome"
+              className="px-8 md:px-10 py-3 md:py-4 bg-transparent text-black border-2 border-black text-xs md:text-sm tracking-wider uppercase font-bold hover:bg-black hover:text-white transition-colors duration-300 text-center"
+            >
+              Join
             </Link>
           </div>
         </div>

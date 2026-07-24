@@ -8,6 +8,9 @@ import NewsletterSignup from "@/components/ui/NewsSignUp";
 import ImageGrid from "@/components/ui/ImageGrid";
 import { shopifyFetch } from "@/lib/shopify/client";
 import { GET_PRODUCTS } from "@/lib/shopify/queries";
+import VideoHero from "@/components/ui/homeVid";
+import Grid1 from "@/components/ui/grid-1";
+import Grid2 from "@/components/ui/grid2";
 
 async function getShopifyProducts() {
   // Check if Shopify credentials exist
@@ -110,10 +113,13 @@ export default async function HomePage() {
     <>
       <Navbar />
       <main className="bg-white min-h-screen">
+        <VideoHero />
         <HeroSection />
+        <Grid2 />
+        {/* <ImageGrid /> */}
         <ProductsSection products={products} />
+        <Grid1 />
         <BrandIntro />
-        <ImageGrid />
         <NewsletterSignup />
       </main>
       <Footer />

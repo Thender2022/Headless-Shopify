@@ -1,5 +1,4 @@
 // app/components/ui/ProductsSection.tsx
-// import Image from "next/image";
 import Link from "next/link";
 import { ShopifyProductCard } from "@/components/ui/shopify-product-card";
 
@@ -41,25 +40,31 @@ interface ProductsSectionProps {
 
 export default function ProductsSection({ products }: ProductsSectionProps) {
   return (
-    <section className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        {/* Title */}
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Latest Drops
-        </h2>
-        
-        {/* Product Grid - Wider! */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <section className="py-16 md:py-20 px-4 md:px-8 bg-white">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="text-sm tracking-[0.3em] uppercase text-gray-500">
+            Collection
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tight mt-2 text-black">
+            Latest <span className="text-[#90210F]">Drops</span>
+          </h2>
+          <div className="w-12 h-1 bg-[#90210F] mx-auto mt-4" />
+        </div>
+
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {products.map((product) => (
             <ShopifyProductCard key={product.id} product={product} />
           ))}
         </div>
-        
+
         {/* View All Button */}
-        <div className="text-center mt-12">
-          <Link 
-            href="/shopify-products" 
-            className="inline-block border border-gray-300 px-8 py-3 text-sm tracking-wider uppercase hover:bg-gray-50 transition-colors"
+        <div className="text-center mt-16">
+          <Link
+            href="/shopify-products"
+            className="inline-block bg-black text-white px-10 py-4 text-sm tracking-[0.2em] uppercase hover:bg-gray-800 transition-colors duration-300"
           >
             View All
           </Link>

@@ -1,6 +1,5 @@
 // lib/shopify/client.ts
 
-
 const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
 const storefrontToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
 
@@ -11,9 +10,11 @@ if (!domain || !storefrontToken) {
 export const shopifyFetch = async <T = unknown>({
   query,
   variables,
+  tags = [], // ⭐ ADD THIS - optional tags array
 }: {
   query: string;
   variables?: Record<string, unknown>;
+  tags?: string[]; // ⭐ ADD THIS - type definition
 }): Promise<{ data: T; errors?: unknown[] }> => {
   const response = await fetch(`https://${domain}/api/2024-01/graphql.json`, {
     method: 'POST',
@@ -22,6 +23,9 @@ export const shopifyFetch = async <T = unknown>({
       'X-Shopify-Storefront-Access-Token': storefrontToken,
     },
     body: JSON.stringify({ query, variables }),
+    next: { 
+      tags: ['products', ...tags] // ⭐ ADD THIS - enables revalidation by tag
+    },
   });
 
   if (!response.ok) {
